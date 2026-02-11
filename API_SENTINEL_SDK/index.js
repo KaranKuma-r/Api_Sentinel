@@ -1,4 +1,4 @@
-const middleware = require("../API_SENTINEL_SDK/middlleware")
+const middleware = require("./middleware")
 
 module.exports = function sentinel(config) {
   if (!config) {
