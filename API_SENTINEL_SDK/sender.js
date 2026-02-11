@@ -18,5 +18,5 @@ function sendMetric(metric, config) {
 })
 }
 
-module.exports = { sendMetric }
+module.exports =  sendMetric 
 
