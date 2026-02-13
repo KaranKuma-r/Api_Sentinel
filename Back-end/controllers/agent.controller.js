@@ -4,12 +4,14 @@ const generatekey = require('../utils/generateskey')
 const createAgent = async (req, res) => {
     try {
 
-        const { serviceName } = req.body
+        let { serviceName } = req.body
 
         const existingAgent = await Agent.findOne({
             userId: req.user.id,
             serviceName
         });
+
+        serviceName = serviceName.trim().toLowerCase();
 
         if (existingAgent) {
             return res.status(200).json({
