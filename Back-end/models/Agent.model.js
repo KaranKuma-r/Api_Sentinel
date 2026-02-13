@@ -12,9 +12,15 @@ const agentSchema =new mongoose.Schema({
     },
     agentKey:{
         type:String,
-        umique:true,
+        unique:true,
         required:true
     }
 }, { timestamps: true });
+
+agentSchema.index(
+  { userId: 1, serviceName: 1 },
+  { unique: true }
+);
+
 
 module.exports=mongoose.model("Agent",agentSchema)
