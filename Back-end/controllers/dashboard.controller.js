@@ -1,5 +1,7 @@
 const { getEndpointAggregation,getServiceSummary  } = require('../services/aggregation.service');
 const {attachHealthStatus,calculateHealth}=require("../services/health.service")
+const { getTimeSeries } = require("../services/timeseries.service");
+const { getTimeRange } = require("../utils/timeRange.util");
 
 exports.getEndpoints = async (req, res) => {
   try {
@@ -63,4 +65,37 @@ exports.getSummary = async (req, res) => {
     });
   }
 };
+
+exports.getTimeSeriesData = async (req, res) => {
+  try {
+    const { userId, serviceName } = req.agent;
+
+    const range = req.query.range || "1h";
+
+    const { startTime, unit } = getTimeRange(range);
+    const endTime = new Date();
+
+    const data = await getTimeSeries(
+      userId,
+      serviceName,
+      startTime,
+      endTime,
+      unit
+    );
+
+    res.json({
+      success: true,
+      range,
+      timeseries: data
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Time-series aggregation failed"
+    });
+  }
+};
+
 
