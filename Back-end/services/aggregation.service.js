@@ -156,4 +156,85 @@ async function getServiceSummary(userId, serviceName, startTime, endTime) {
     }
 }
 
-module.exports = { getEndpointAggregation,getServiceSummary }
+async function getSlowEndpoints(userId, serviceName, startTime, endTime, limit = 5) {
+
+  const result = await MetricEvents.aggregate([
+
+    {
+      $match: {
+        userId: userId,
+        serviceName: serviceName,
+        createdAt: {
+          $gte: startTime,
+          $lte: endTime
+        }
+      }
+    },
+
+    {
+      $group: {
+        _id: "$endpoint",
+
+        totalRequest: { $sum: 1 },
+
+        avgLatency: { $avg: "$responseTimeMs" },
+
+        errorCount: {
+          $sum: {
+            $cond: [{ $eq: ["$error", true] }, 1, 0]
+          }
+        },
+
+        p95: {
+          $percentile: {
+            input: "$responseTimeMs",
+            p: [0.95],
+            method: "approximate"
+          }
+        }
+      }
+    },
+
+    {
+      $project: {
+        _id: 0,
+        endpoint: "$_id",
+
+        totalRequest: 1,
+
+        avgLatency: { $round: ["$avgLatency", 2] },
+
+        p95: {
+          $round: [{ $arrayElemAt: ["$p95", 0] }, 2]
+        },
+
+        errorRate: {
+          $round: [
+            {
+              $multiply: [
+                { $divide: ["$errorCount", "$totalRequest"] },
+                100
+              ]
+            },
+            2
+          ]
+        }
+      }
+    },
+    {
+      $match: {
+        totalRequest: { $gte: 2 }   
+      }
+    },
+
+    { $sort: { p95: -1 } },
+
+    { $limit: parseInt(limit) || 5 }
+
+  ])
+
+  return result
+}
+
+
+module.exports = { getEndpointAggregation,getServiceSummary ,getSlowEndpoints}
