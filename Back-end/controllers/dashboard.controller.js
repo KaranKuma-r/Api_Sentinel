@@ -1,5 +1,5 @@
-const { getEndpointAggregation,getServiceSummary  } = require('../services/aggregation.service');
-const {attachHealthStatus,calculateHealth}=require("../services/health.service")
+const { getEndpointAggregation, getServiceSummary, getSlowEndpoints } = require('../services/aggregation.service');
+const { attachHealthStatus, calculateHealth } = require("../services/health.service")
 const { getTimeSeries } = require("../services/timeseries.service");
 const { getTimeRange } = require("../utils/timeRange.util");
 
@@ -9,7 +9,7 @@ exports.getEndpoints = async (req, res) => {
     const { userId, serviceName } = req.agent
 
     const endTime = new Date()
-    const startTime = new Date(Date.now() - 5 * 60 * 1000) 
+    const startTime = new Date(Date.now() - 5 * 60 * 1000)
 
     const data = await getEndpointAggregation(
       userId,
@@ -71,6 +71,7 @@ exports.getTimeSeriesData = async (req, res) => {
     const { userId, serviceName } = req.agent;
 
     const range = req.query.range || "1h";
+    const endpoint = req.query.endpoint || null; 
 
     const { startTime, unit } = getTimeRange(range);
     const endTime = new Date();
@@ -80,12 +81,14 @@ exports.getTimeSeriesData = async (req, res) => {
       serviceName,
       startTime,
       endTime,
-      unit
+      unit,
+      endpoint
     );
 
     res.json({
       success: true,
       range,
+      endpoint, 
       timeseries: data
     });
 
@@ -99,3 +102,32 @@ exports.getTimeSeriesData = async (req, res) => {
 };
 
 
+exports.slowEndpoints = async (req, res) => {
+
+  try {
+    const { userId, serviceName } = req.agent
+
+    const { range = "1h", limit = 5 } = req.query;
+
+    const endTime = new Date()
+    const { startTime } = getTimeRange(range);
+
+
+    const data = await getSlowEndpoints(
+      userId,
+      serviceName,
+      startTime,
+      endTime,
+      Number(limit)
+    );
+
+    res.json({
+      success: true,
+      data
+    });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+
+};
