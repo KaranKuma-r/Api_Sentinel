@@ -1,15 +1,22 @@
 
 const MetricEvents = require("../models/MetricsEvent.model");
 
-async function getTimeSeries(userId, serviceName, startTime, endTime, unit) {
+async function getTimeSeries(userId, serviceName, startTime, endTime, unit,endpoint) {
+
+   const matchStage = {
+    userId: userId,
+    serviceName,
+    createdAt: { $gte: startTime, $lte: endTime }
+  }
+
+  if (endpoint) {
+    matchStage.endpoint = endpoint;
+  }
+  
   const data = await MetricEvents.aggregate([
-    {
-      $match: {
-        userId,
-        serviceName,
-        createdAt: { $gte: startTime, $lte: endTime }
-      }
-    },
+    
+      {$match:matchStage},
+    
     {
       $group: {
         _id: {
