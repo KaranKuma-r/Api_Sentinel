@@ -158,6 +158,7 @@ exports.getErrors = async (req, res) => {
       data
     });
 
+    
   } catch (err) {
     console.error("Error analytics failed:", err);
     res.status(500).json({
