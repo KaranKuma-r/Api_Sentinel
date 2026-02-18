@@ -33,5 +33,7 @@ const metricsEventSchema = new mongoose.Schema({
     }
 },{ timestamps: true })
 
+metricsEventSchema.index({ userId: 1, serviceName: 1, createdAt: -1 });
+
 
 module.exports= mongoose.model("MetricsEvent",metricsEventSchema)
