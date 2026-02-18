@@ -1,7 +1,9 @@
 const { getEndpointAggregation, getServiceSummary, getSlowEndpoints } = require('../services/aggregation.service');
+const {getErrorAnalytics}=require("../services/errorAnalytics.service")
 const { attachHealthStatus, calculateHealth } = require("../services/health.service")
 const { getTimeSeries } = require("../services/timeseries.service");
 const { getTimeRange } = require("../utils/timeRange.util");
+
 
 exports.getEndpoints = async (req, res) => {
   try {
@@ -130,4 +132,37 @@ exports.slowEndpoints = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 
+};
+
+
+exports.getErrors = async (req, res) => {
+  try {
+
+    const { userId, serviceName } = req.agent;
+
+    const range = req.query.range || "1h";
+
+    const { startTime } = getTimeRange(range);
+    const endTime = new Date();
+
+    const data = await getErrorAnalytics(
+      userId,
+      serviceName,
+      startTime,
+      endTime
+    );
+
+    res.json({
+      success: true,
+      range,
+      data
+    });
+
+  } catch (err) {
+    console.error("Error analytics failed:", err);
+    res.status(500).json({
+      success: false,
+      message: "Error analytics failed"
+    });
+  }
 };
