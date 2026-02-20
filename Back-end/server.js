@@ -36,6 +36,7 @@ app.use('/dashboard', dashboardRoutes)
 
 
 
+
 app.get("/", (req, res) => {
   res.send("Server running 🚀");
 });
