@@ -20,10 +20,11 @@ async function getTimeSeries(userId, serviceName, startTime, endTime, unit,endpo
     {
       $group: {
         _id: {
+           endpoint: "$endpoint",
           time: {
             $dateTrunc: {
               date: "$createdAt",
-              unit
+              unit:unit
             }
           }
         },
@@ -41,6 +42,7 @@ async function getTimeSeries(userId, serviceName, startTime, endTime, unit,endpo
     {
       $project: {
         _id: 0,
+        endpoint: "$_id.endpoint",
         time: "$_id.time",
         requestCount: 1,
         avgLatency: { $round: ["$avgLatency", 2] },
