@@ -35,7 +35,8 @@ const dashboardRoutes = require('./routes/dashboard.routes')
 app.use('/dashboard', dashboardRoutes)
 
 
-
+const insight =require("./routes/insight.routes")
+app.use("/dashboard/insights",insight);
 
 app.get("/", (req, res) => {
   res.send("Server running 🚀");
