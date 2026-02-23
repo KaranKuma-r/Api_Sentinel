@@ -1,18 +1,22 @@
 function calculateHealth(data) {
 
-  let status = "HEALTHY";
-
-  if (data.errorRate > 8) {
-    status = "UNHEALTHY";
-  }
-  else if (data.p95 > 1000 || data.avgLatency > 700) {
-    status = "UNHEALTHY";
-  }
-  else if (data.p95 > 600 || data.avgLatency > 400) {
-    status = "SLOW";
+  if (data.errorRate > 5) {
+    return "CRITICAL";
   }
 
-  return status;
+  if (data.errorRate > 1) {
+    return "DEGRADED";
+  }
+
+  if (data.p95 > 1000 || data.avgLatency > 700) {
+    return "CRITICAL";
+  }
+
+  if (data.p95 > 600 || data.avgLatency > 400) {
+    return "SLOW";
+  }
+
+  return "HEALTHY";
 }
 
 function attachHealthStatus(endpoints) {
