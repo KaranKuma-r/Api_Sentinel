@@ -1,7 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar";
 import Sentinel3D from "../components/Sentinel3D";
 
 export default function Landing() {
+  const navigate = useNavigate()
+
   return (
     <div className="relative h-screen bg-gradient-to-br from-black via-slate-900 to-indigo-950 text-white overflow-hidden">
       <Navbar />
@@ -16,9 +19,9 @@ export default function Landing() {
             Real-time API and backend monitoring with AI insights.
           </p>
 
-          {/* CTA Buttons (optional but recommended) */}
+         
           <div className="flex gap-4">
-            <button className="px-6 py-3 bg-emerald-500 rounded-xl hover:bg-emerald-400 text-black font-semibold">
+            <button className="px-6 py-3 bg-emerald-500 rounded-xl hover:bg-emerald-400 text-black font-semibold"  onClick={()=>navigate('/login')}>
               Start Monitoring
             </button>
             <button className="px-6 py-3 border border-white/30 rounded-xl">
