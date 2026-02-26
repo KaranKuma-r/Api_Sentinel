@@ -1,15 +1,10 @@
 const mongoose = require("mongoose");
-
+// const agent
 const metricsEventSchema = new mongoose.Schema({
-
-    userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User",
-        required:true
-    },
-    serviceName:{
-        type:String,
-        required:true
+    agentKey: {
+      type: String,
+      required: true,
+      index: true
     },
     endpoint:{
         type:String,
@@ -33,7 +28,9 @@ const metricsEventSchema = new mongoose.Schema({
     }
 },{ timestamps: true })
 
-metricsEventSchema.index({ userId: 1, serviceName: 1, createdAt: -1 });
+metricsEventSchema.index({agentKey:1, createdAt: -1 });
+metricsEventSchema.index({ agentKey: 1, endpoint: 1 })
+
 
 
 module.exports= mongoose.model("MetricsEvent",metricsEventSchema)
