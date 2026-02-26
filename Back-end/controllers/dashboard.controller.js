@@ -1,23 +1,25 @@
 const { getEndpointAggregation, getServiceSummary, getSlowEndpoints } = require('../services/aggregation.service');
-const {getErrorAnalytics}=require("../services/errorAnalytics.service")
+const { getErrorAnalytics } = require("../services/errorAnalytics.service")
 const { attachHealthStatus, calculateHealth } = require("../services/health.service")
 const { getTimeSeries } = require("../services/timeseries.service");
 const { getTimeRange } = require("../utils/timeRange.util");
-
+// const Agent = require("../models/Agent.model");
+// const agentKey =require("../models/Agent.model")
 
 exports.getEndpoints = async (req, res) => {
+  // console.log("REQ.URL:", req.url);
+  // console.log("REQ.QUERY:", req.query);
   try {
-
-    const { userId, serviceName } = req.agent
-
+    const { agentKey } = req.agent
+    console.log(agentKey)
     const endTime = new Date()
     const startTime = new Date(Date.now() - 5 * 60 * 1000)
 
     const data = await getEndpointAggregation(
-      userId,
-      serviceName,
+      agentKey,
       startTime,
-      endTime
+      endTime,
+
     )
     const enriched = attachHealthStatus(data)
     res.json({
@@ -26,6 +28,7 @@ exports.getEndpoints = async (req, res) => {
     })
 
   } catch (err) {
+
     console.error(err)
     res.status(500).json({
       success: false,
@@ -37,14 +40,13 @@ exports.getEndpoints = async (req, res) => {
 exports.getSummary = async (req, res) => {
   try {
 
-    const { userId, serviceName } = req.agent;
+    const { agentKey } = req.agent
 
     const endTime = new Date();
-    const startTime = new Date(Date.now() - 5 * 60 * 1000); // last 5 min
+    const startTime = new Date(Date.now() - 60 * 60 * 1000); // last 5 min
 
     const summary = await getServiceSummary(
-      userId,
-      serviceName,
+      agentKey,
       startTime,
       endTime
     );
@@ -70,27 +72,23 @@ exports.getSummary = async (req, res) => {
 
 exports.getTimeSeriesData = async (req, res) => {
   try {
-    const { userId, serviceName } = req.agent;
+    const { agentKey } = req.agent
 
     const range = req.query.range || "1h";
-    const endpoint = req.query.endpoint || null; 
 
     const { startTime, unit } = getTimeRange(range);
     const endTime = new Date();
 
     const data = await getTimeSeries(
-      userId,
-      serviceName,
+      agentKey,
       startTime,
       endTime,
       unit,
-      endpoint
     );
 
     res.json({
       success: true,
       range,
-      endpoint, 
       timeseries: data
     });
 
@@ -107,7 +105,7 @@ exports.getTimeSeriesData = async (req, res) => {
 exports.slowEndpoints = async (req, res) => {
 
   try {
-    const { userId, serviceName } = req.agent
+    const { agentKey } = req.agent
 
     const { range = "1h", limit = 5 } = req.query;
 
@@ -116,8 +114,7 @@ exports.slowEndpoints = async (req, res) => {
 
 
     const data = await getSlowEndpoints(
-      userId,
-      serviceName,
+      agentKey,
       startTime,
       endTime,
       Number(limit)
@@ -138,7 +135,7 @@ exports.slowEndpoints = async (req, res) => {
 exports.getErrors = async (req, res) => {
   try {
 
-    const { userId, serviceName } = req.agent;
+    const { agentKey } = req.agent
 
     const range = req.query.range || "1h";
 
@@ -146,8 +143,7 @@ exports.getErrors = async (req, res) => {
     const endTime = new Date();
 
     const data = await getErrorAnalytics(
-      userId,
-      serviceName,
+      agentKey,
       startTime,
       endTime
     );
@@ -158,7 +154,7 @@ exports.getErrors = async (req, res) => {
       data
     });
 
-    
+
   } catch (err) {
     console.error("Error analytics failed:", err);
     res.status(500).json({
