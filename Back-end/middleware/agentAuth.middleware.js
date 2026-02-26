@@ -1,6 +1,6 @@
 const Agent = require("../models/Agent.model")
 
-const agentAuth = async (req, res,next) => {
+const agentAuth = async (req, res, next) => {
 
     try {
         const authHeader = req.headers.authorization
@@ -16,7 +16,7 @@ const agentAuth = async (req, res,next) => {
 
         if (!agent) {
             return res.status(401).json({
-                message: "Invalid agent key"
+                message: "Invalid agent key from agent auth"
             })
         };
 
@@ -32,4 +32,4 @@ const agentAuth = async (req, res,next) => {
         res.status(500).json({ message: "Agent authentication failed" });
     }
 }
-module.exports=agentAuth
+module.exports = agentAuth
