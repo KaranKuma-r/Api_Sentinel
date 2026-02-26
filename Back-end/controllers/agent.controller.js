@@ -18,7 +18,7 @@ const createAgent = async (req, res) => {
                 agentKey: existingAgent.agentKey,
                 message: "Agent already exists for this service name"
             });
-        }
+        };
 
         const agent = await Agent.create({
             userId: req.user.id,
