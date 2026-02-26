@@ -1,8 +1,19 @@
 const MetricsEvent = require("../models/MetricsEvent.model")
 
-const ingestMetrics =async  (req, res) => {
+const ingestMetrics = async (req, res) => {
 
     try {
+        const agentKeyFromHeaders = req.headers.authorization;
+
+        if (!agentKeyFromHeaders) return res.status(400).json({ message: "Missing Authorization header" })
+
+        const agentKey = agentKeyFromHeaders.split(" ")[1];
+
+        if (!agentKey) {
+            return res.status(400).json({
+                message: "Invalid agent key format"
+            });
+        }
 
         const { endpoint, method, statusCode, responseTimeMs } = req.body
 
@@ -11,23 +22,22 @@ const ingestMetrics =async  (req, res) => {
                 message: "Missing required metric fields"
             });
         }
-         const isError = statusCode >= 400;
+        const isError = statusCode >= 400;
 
         await MetricsEvent.create({
-            userId:req.agent.userId,
-            serviceName:req.agent.serviceName,
+            agentKey,
             endpoint,
             method,
             statusCode,
             responseTimeMs,
-            error : isError
+            error: isError
         })
-        console.log(endpoint, method, statusCode, responseTimeMs, isError )
-         res.status(202).json({ message: "Metric ingested" });
+        console.log(endpoint, method, statusCode, responseTimeMs, isError)
+        res.status(202).json({ message: "Metric ingested" });
 
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 }
 
-module.exports=ingestMetrics
+module.exports = ingestMetrics

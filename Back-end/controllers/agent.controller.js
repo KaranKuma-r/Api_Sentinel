@@ -25,11 +25,22 @@ const createAgent = async (req, res) => {
             serviceName,
             agentKey: generatekey()
         })
-
+        console.log("GET USER:", req.user.id);
         res.status(201).json({ agentKey: agent.agentKey })
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
 }
 
-module.exports = createAgent
+const getAgents = async (req, res) => {
+    try {
+        const agents = await Agent.find({ userId: req.user.id })
+        console.log("CREATE USER:", req.user.id);
+
+        console.log(agents)
+        res.status(200).json(agents);
+    } catch (error) {
+        res.status(500).json({ message: err.message });
+    }
+}
+module.exports = { createAgent, getAgents }
