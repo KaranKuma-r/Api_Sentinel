@@ -1,13 +1,15 @@
 const MetricEvents = require('../models/MetricsEvent.model')
+const mongoose = require("mongoose");
 
-async function getEndpointAggregation(userId, serviceName, startTime, endTime) {
+
+
+async function getEndpointAggregation(agentKey, startTime, endTime) {
 
     const result = await MetricEvents.aggregate([
         {
 
             $match: {
-                userId: userId,
-                serviceName: serviceName,
+               agentKey,
                 createdAt: {
                     $gte: startTime,
                     $lte: endTime,
@@ -85,14 +87,13 @@ async function getEndpointAggregation(userId, serviceName, startTime, endTime) {
 
 }
 
-async function getServiceSummary(userId, serviceName, startTime, endTime) {
+async function getServiceSummary( agentKey,startTime, endTime) {
 
     const result = await MetricEvents.aggregate([
 
         {
             $match: {
-                userId: userId,
-                serviceName: serviceName,
+                agentKey,
                 createdAt: {
                     $gte: startTime,
                     $lte: endTime,
@@ -156,14 +157,14 @@ async function getServiceSummary(userId, serviceName, startTime, endTime) {
     }
 }
 
-async function getSlowEndpoints(userId, serviceName, startTime, endTime, limit = 5) {
+async function getSlowEndpoints( agentKey, startTime, endTime, limit = 5) {
 
   const result = await MetricEvents.aggregate([
 
     {
       $match: {
-        userId: userId,
-        serviceName: serviceName,
+         agentKey,
+
         createdAt: {
           $gte: startTime,
           $lte: endTime
