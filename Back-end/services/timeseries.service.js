@@ -1,13 +1,12 @@
 
 const MetricEvents = require("../models/MetricsEvent.model");
 
-async function getTimeSeries(userId, serviceName, startTime, endTime, unit,endpoint) {
+async function getTimeSeries(agentKey, startTime, endTime, unit,endpoint) {
 
-   const matchStage = {
-    userId: userId,
-    serviceName,
+ const matchStage = {
+    agentKey,
     createdAt: { $gte: startTime, $lte: endTime }
-  }
+  };
 
   if (endpoint) {
     matchStage.endpoint = endpoint;
