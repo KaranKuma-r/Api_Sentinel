@@ -1,21 +1,24 @@
 const mongoose = require("mongoose");
 const MetricEvents = require("../models/MetricsEvent.model");
 
-async function getErrorAnalytics(userId, serviceName, startTime, endTime) {
-
-  const matchStage = {
-    userId: new mongoose.Types.ObjectId(userId),
-    serviceName,
-    error: true,
-    createdAt: { $gte: startTime, $lte: endTime }
-  };
+async function getErrorAnalytics(agentKey, startTime, endTime) {
 
   const result = await MetricEvents.aggregate([
 
-    { $match: matchStage },
+    {
+      $match: {
+        agentKey,
+        error: true,
+        createdAt: {
+          $gte: startTime,
+          $lte: endTime
+        }
+      }
+    },
 
     {
       $facet: {
+
         statusCodes: [
           {
             $group: {
@@ -32,6 +35,7 @@ async function getErrorAnalytics(userId, serviceName, startTime, endTime) {
             }
           }
         ],
+
         endpoints: [
           {
             $group: {
