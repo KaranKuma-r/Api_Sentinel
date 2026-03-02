@@ -51,6 +51,45 @@ async function getErrorAnalytics(agentKey, startTime, endTime) {
               errorCount: 1
             }
           }
+        ],
+
+        endpointStatusCodes: [
+
+          {
+            $group: {
+              _id: {
+                endpoint: "$endpoint",
+                statusCode: "$statusCode"
+              },
+              count: { $sum: 1 }
+            }
+          },
+
+          {
+            $group: {
+              _id: "$_id.endpoint",
+
+              errorCount: { $sum: "$count" },
+
+              statusCodes: {
+                $push: {
+                  statusCode: "$_id.statusCode",
+                  count: "$count"
+                }
+              }
+
+            }
+          },
+
+          {
+            $project: {
+              _id: 0,
+              endpoint: "$_id",
+              errorCount: 1,
+              statusCodes: 1
+            }
+          }
+
         ]
 
       }
@@ -58,7 +97,12 @@ async function getErrorAnalytics(agentKey, startTime, endTime) {
 
   ]);
 
-  return result[0] || { statusCodes: [], endpoints: [] };
+  return result[0] || {
+    statusCodes: [],
+    endpoints: [],
+    endpointStatusCodes: []
+  };
+
 }
 
 module.exports = { getErrorAnalytics };
