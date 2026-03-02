@@ -2,9 +2,9 @@ const { buildContext } = require("./context.builder");
 const { calculateTimeToThreshold } = require("./timeToThreshold");
 const { generateAIInsight } = require("./predict.ai.service");
 
-exports.buildInsights = async (aggData, tsData) => {
+exports.buildInsights = async (aggData, tsData, errorStatusData) => {
 
-  const contexts = buildContext(aggData, tsData);
+  const contexts = buildContext(aggData, tsData,errorStatusData);
 
   const enriched = contexts.map(ctx => {
     const time = calculateTimeToThreshold(ctx.latencyTrend);
@@ -19,7 +19,7 @@ exports.buildInsights = async (aggData, tsData) => {
     .filter(c => c.status === "HEALTHY" && c.timeToSlow === "stable")
     .map(c => ({
       endpoint: c.endpoint,
-      requestCount: c.requestCount,  
+      requestCount: c.requestCount,
       severity: "LOW",
       message: "All good",
       timeToSlow: "stable",
@@ -40,7 +40,9 @@ exports.buildInsights = async (aggData, tsData) => {
       errorRate: c.errorRate,
       requestCount: c.requestCount,
       timeToSlow: c.timeToSlow,
-      latencyTrend: c.latencyTrend
+      latencyTrend: c.latencyTrend,
+      statusCodes: c.statusCodes,
+      errorCount: c.errorCount
     }));
 
     const aiResponse = await generateAIInsight(aiPayload);
@@ -51,14 +53,17 @@ exports.buildInsights = async (aggData, tsData) => {
 
       return {
         endpoint: r.endpoint,
-        requestCount: original?.requestCount || 0, 
+        requestCount: original?.requestCount || 0,
         severity: r.severity,
         message: r.issue,
         reason: r.reason,
-        action: r.action
+        action: r.action,
+        latencyTrend: original?.latencyTrend || [],
+        timeToSlow: original?.timeToSlow || "stable",
+        statusCodes: original?.statusCodes || [],
+        errorCount: original?.errorCount || 0
       };
     });
   }
-
   return [...healthy, ...aiResults];
 };
