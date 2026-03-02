@@ -4,6 +4,7 @@ const { getTimeRange } = require("../utils/timeRange.util");
 const { getEndpointAggregation } = require("../services/aggregation.service");
 
 const { getTimeSeries } = require("../services/timeseries.service");
+const { getErrorAnalytics } = require("../services/errorAnalytics.service");
 
 exports.getInsights = async (req, res) => {
 
@@ -27,10 +28,12 @@ exports.getInsights = async (req, res) => {
       endTime,
       unit
     );
-
-    const insights = await buildInsights(aggData, tsData);
-    console.log("AGG LENGTH:", aggData.length);
-    console.log("TS LENGTH:", tsData.length);
+    const errorStatusData = await getErrorAnalytics(
+      agentKey,
+      startTime,
+      endTime,
+    )
+    const insights = await buildInsights(aggData, tsData,errorStatusData.endpointStatusCodes);
     console.log("📊 INSIGHT API HIT");
 
 
