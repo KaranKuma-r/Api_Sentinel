@@ -1,13 +1,17 @@
 const { calculateHealth } = require("../health.service");
 
-exports.buildContext = (aggData, tsData) => {
+exports.buildContext = (aggData, tsData, errorStatusData = []) => {
 
   return aggData.map(item => {
 
     const latencyTrend = tsData
       .filter(t => t.endpoint === item.endpoint)
       .map(t => t.avgLatency)
-      .slice(-3);
+      .slice(-10);
+
+    const errorMatch = errorStatusData.find(
+      e => e.endpoint === item.endpoint
+    );
 
     return {
       endpoint: item.endpoint,
@@ -20,9 +24,9 @@ exports.buildContext = (aggData, tsData) => {
         avgLatency: item.avgLatency,
         errorRate: item.errorRate
       }),
-      latencyTrend
+      latencyTrend,
+      statusCodes: errorMatch?.statusCodes || [],
+      errorCount: errorMatch?.errorCount || 0
     };
-
   });
-
 };
