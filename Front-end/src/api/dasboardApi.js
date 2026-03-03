@@ -38,3 +38,20 @@ export const getErrors = async(agentKey)=>{
     })
     return res.data
 }
+
+export const getEndpoints = async(agentKey)=>{
+      const res = await axios.get(`${BASE_URL}/endpoints`,{
+        headers:{
+            Authorization:`Agent ${agentKey}`
+        }
+    })
+    return res.data
+}
+export const getInsightsAI = async(agentKey)=>{
+      const res = await axios.get(`${BASE_URL}/insights`,{
+        headers:{
+            Authorization:`Agent ${agentKey}`
+        }
+    })
+    return res.data
+}
