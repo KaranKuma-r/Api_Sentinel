@@ -1,17 +1,21 @@
 export const Endpoints = ({ data = [] }) => {
 
-  const getStatusStyle = (status) => {
+const getStatusStyle = (status) => {
     switch (status) {
       case "HEALTHY":
         return "text-emerald-400 bg-emerald-400/10";
-      case "SLOW":
+
+      case "WARNING":
         return "text-amber-400 bg-amber-400/10";
+
       case "CRITICAL":
         return "text-rose-400 bg-rose-400/10";
+
       default:
         return "text-slate-400 bg-slate-400/10";
     }
   };
+
 
   return (
     <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5">
