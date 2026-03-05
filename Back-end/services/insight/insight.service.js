@@ -16,18 +16,18 @@ exports.buildInsights = async (aggData, tsData, errorStatusData) => {
   });
 
   const healthy = enriched
-    .filter(c => c.status === "HEALTHY" && c.timeToSlow === "stable")
+    .filter(c => c.severity === "HEALTHY" && c.timeToSlow === "stable")
     .map(c => ({
       endpoint: c.endpoint,
       requestCount: c.requestCount,
-      severity: "LOW",
+      severity: "HEALTHY",
       message: "All good",
       timeToSlow: "stable",
       latencyTrend: c.latencyTrend
     }));
 
   const unhealthy = enriched.filter(
-    c => !(c.status === "HEALTHY" && c.timeToSlow === "stable")
+    c => !(c.severity === "HEALTHY" && c.timeToSlow === "stable")
   );
 
   let aiResults = [];
@@ -36,6 +36,7 @@ exports.buildInsights = async (aggData, tsData, errorStatusData) => {
 
     const aiPayload = unhealthy.map(c => ({
       endpoint: c.endpoint,
+      severity: c.severity,   
       p95: c.p95,
       errorRate: c.errorRate,
       requestCount: c.requestCount,
@@ -54,7 +55,7 @@ exports.buildInsights = async (aggData, tsData, errorStatusData) => {
       return {
         endpoint: r.endpoint,
         requestCount: original?.requestCount || 0,
-        severity: r.severity,
+        severity: original?.severity || "LOW",
         message: r.issue,
         reason: r.reason,
         action: r.action,
