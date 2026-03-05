@@ -6,8 +6,17 @@ exports.buildContext = (aggData, tsData, errorStatusData = []) => {
 
     const latencyTrend = tsData
       .filter(t => t.endpoint === item.endpoint)
-      .map(t => t.avgLatency)
+      .map(t => Number(t.avgLatency.toFixed(2)))
       .slice(-10);
+
+    const trendDirection =
+      latencyTrend.length > 1
+        ? latencyTrend[latencyTrend.length - 1] > latencyTrend[0]
+          ? "DEGRADING"
+          : latencyTrend[latencyTrend.length - 1] < latencyTrend[0]
+          ? "IMPROVING"
+          : "STABLE"
+        : "STABLE";
 
     const errorMatch = errorStatusData.find(
       e => e.endpoint === item.endpoint
@@ -19,14 +28,17 @@ exports.buildContext = (aggData, tsData, errorStatusData = []) => {
       avgLatency: item.avgLatency,
       errorRate: item.errorRate,
       requestCount: item.totalRequest,
-      status: calculateHealth({
+      severity: calculateHealth({
         p95: item.p95,
         avgLatency: item.avgLatency,
         errorRate: item.errorRate
       }),
       latencyTrend,
+      trendDirection,
       statusCodes: errorMatch?.statusCodes || [],
       errorCount: errorMatch?.errorCount || 0
     };
+
   });
+
 };
