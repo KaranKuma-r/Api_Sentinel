@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/Authcontext";
 
 export default function Navbar() {
   const { isAuthenticated, logout } = useAuth();
@@ -23,9 +23,9 @@ export default function Navbar() {
         className="text-2xl font-bold cursor-pointer"
         onClick={() => {
           if (isAuthenticated) {
-            navigate("/dashboard");
+            navigate("/dashboard", { replace: true });;
           } else {
-            navigate("/");
+            navigate("/", { replace: true });
           }
         }}
       >
@@ -35,14 +35,14 @@ export default function Navbar() {
       {!isAuthenticated ? (
         <div className="flex gap-4">
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/login", { replace: true })}
             className="px-4 py-2 bg-emerald-500 rounded-lg hover:bg-emerald-400 text-black font-semibold"
           >
             Login
           </button>
 
           <button
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/signup", { replace: true })}
             className="px-4 py-2 border border-white/30 rounded-lg hover:bg-white/10"
           >
             Sign Up
