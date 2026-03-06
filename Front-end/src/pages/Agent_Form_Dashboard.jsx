@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const [services, setServices] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ serviceName: "" });
   const [createdService, setCreatedService] = useState(null);
+  const navigate = useNavigate()
 
   const token = localStorage.getItem("token");
 
@@ -28,6 +30,17 @@ export default function Dashboard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const isDuplicate = services.some(
+      (s) =>
+        s.serviceName.toLowerCase().trim() ===
+        form.serviceName.toLowerCase().trim()
+    );
+
+    if (isDuplicate) {
+      alert("⚠️ Service already exists. Don't duplicate.");
+      return;
+    }
 
     const res = await axios.post(
       "http://localhost:5000/api/agents/create",
@@ -51,7 +64,6 @@ export default function Dashboard() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0B0F19] text-white font-[Inter]">
 
-     
       <div className="absolute top-[-250px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] bg-indigo-600/20 blur-[180px] rounded-full pointer-events-none" />
 
       <div className="absolute bottom-[-200px] right-[-150px] w-[600px] h-[600px] bg-purple-600/20 blur-[160px] rounded-full pointer-events-none" />
@@ -108,10 +120,12 @@ export default function Dashboard() {
                 {services.map((s, i) => (
                   <div
                     key={s._id}
-                    className="group flex items-start justify-between px-6 py-5 rounded-xl
-                     bg-white/[0.03] border border-white/10
-                     hover:bg-white/[0.06] transition shadow-[0_0_0_1px_rgba(255,255,255,0.03)]"
-                  >
+                    onClick={() => navigate(`/service/${s.agentKey}`)}
+                    className="group cursor-pointer flex items-start justify-between px-6 py-5 rounded-xl
+                      bg-white/[0.03] border border-white/10
+                      hover:bg-white/[0.06] hover:scale-[1.01]
+                      hover:border-indigo-500/30 transition"
+                    >
 
                     <div className="flex gap-4">
 
