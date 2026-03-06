@@ -1,10 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar";
 import Sentinel3D from "../components/Sentinel3D";
+import { useEffect } from "react";
+import { useAuth } from "../context/Authcontext";
 
 export default function Landing() {
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate()
 
+   useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isAuthenticated]);
   return (
     <div className="relative h-screen bg-gradient-to-br from-black via-slate-900 to-indigo-950 text-white overflow-hidden">
       <Navbar />
