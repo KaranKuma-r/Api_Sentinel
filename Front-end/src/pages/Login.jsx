@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/Authcontext";
 
 export default function Login() {
   const { login } = useAuth();
@@ -24,7 +24,7 @@ export default function Login() {
 
       login(res.data.token);
 
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       setError("Invalid email or password", err);
     }
