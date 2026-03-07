@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Agent_Form_Dashboard";
 import ProtectedRoute from "./PrivateRoutes/ProctedRoutes";
 import Signup from "./pages/Signup";
+import { ServiceDashboard } from "./pages/ServiceDashboard";
 
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+     <Route path="/service/:agentKey" element={<ServiceDashboard />} />
       </Routes>
     </BrowserRouter>
   );
