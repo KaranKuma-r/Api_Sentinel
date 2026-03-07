@@ -5,6 +5,9 @@ const getStatusStyle = (status) => {
       case "HEALTHY":
         return "text-emerald-400 bg-emerald-400/10";
 
+      case "LOW":
+      return "text-blue-400 bg-blue-400/10";
+  
       case "WARNING":
         return "text-amber-400 bg-amber-400/10";
 
