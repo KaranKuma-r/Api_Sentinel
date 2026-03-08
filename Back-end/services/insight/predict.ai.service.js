@@ -7,89 +7,205 @@ const client = new OpenAI({
 exports.generateAIInsight = async (contexts) => {
 
 const prompt = `
-You are a senior SRE observability AI.
+You are an AI observability assistant helping developers understand API performance.
 
-Explain system behaviour like a human DevOps engineer.
-Use simple and clear English.
+Your job is to interpret monitoring metrics and explain system behaviour in clear developer-friendly language.
 
-IMPORTANT:
-The monitoring system has already calculated the severity.
+-------------------------------------------------
 
-Use the "severity" field from the input exactly as provided.
-Do NOT change the severity.
+STRICT RULES
 
-Your job is to explain WHY the endpoint received that severity.
+1. The monitoring system already calculated "severity" and "trend".
 
-For each endpoint provide:
+You MUST use these values exactly as provided.
 
-1. Severity explanation
-Explain why the monitoring system marked it as this severity.
+NEVER change the severity.
 
-2. Latency Trend
-IMPROVING
-DEGRADING
-STABLE
+If severity is WARNING → reason must start with "WARNING because..."
+If severity is CRITICAL → reason must start with "CRITICAL because..."
+If severity is LOW → reason must start with "LOW because..."
+If severity is HEALTHY → reason must start with "HEALTHY because..."
 
-3. Future Risk Prediction
+-------------------------------------------------
 
-timeToSlow:
-ALREADY_SLOW
-SOON
-SAFE
+2. Do NOT repeat raw metrics.
 
-4. Root Cause Analysis
+Do NOT write numbers like:
 
-Use these signals:
-- statusCodes
-- errorCount
-- p95
-- errorRate
-- latencyTrend
-- requestCount
+p95=516
+errorRate=0
+requestCount=31
 
-Root cause must be one of:
+Instead explain the behaviour of the system.
 
-EXTERNAL_API
-DATABASE
-HIGH_TRAFFIC
-SERVER_RESOURCE
-NETWORK
-CLIENT_ERROR
-UNKNOWN
+Example:
 
-Rules:
+Bad:
+p95 latency is 516 ms
 
-• Many 5xx errors → SERVER_RESOURCE or EXTERNAL_API
-• Very high latency (>3000ms) → EXTERNAL_API
-• 4xx errors → CLIENT_ERROR
-• High requestCount + rising latency → HIGH_TRAFFIC
-• Latency increasing with no errors → DATABASE or SERVER_RESOURCE
-• Spiky latency → NETWORK
+Good:
+Some requests are significantly slower than normal, indicating a performance bottleneck.
 
-5. Explain clearly WHY the system is slow or failing.
+-------------------------------------------------
 
-Use actual numbers.
+3. The "reason" field must contain a DETAILED explanation.
 
-Bad example:
-"High latency detected"
+The explanation must include:
 
-Good example:
-"124 requests returned 500 errors which indicates the external API is failing."
+• Why this severity level exists  
+• What behaviour is observed in the system  
+• What is the most likely technical cause  
 
-6. Give a short TITLE like a monitoring alert.
+The explanation should be **3–5 sentences long** and clearly describe the situation.
 
-7. Give a SHORT developer-friendly SUMMARY.
+Example structure:
 
-8. Give a clear ACTION that a backend developer can do.
+[SEVERITY] because [observed behaviour].  
+This indicates [technical cause].  
+This situation usually occurs when [possible system condition].  
+If this continues, it may impact users or system stability.
 
-9. Confidence (0-100)
+Example:
 
-Tone:
-- Human explanation
-- No buzzwords
-- Short sentences
+WARNING because response latency is gradually increasing even though requests are still completing successfully.  
+This indicates the service is starting to experience performance pressure.  
+This behaviour is commonly caused by increased traffic, slower database queries, or delayed responses from an external dependency.  
+If the trend continues, the endpoint may become slower for users.
 
-Return ONLY valid JSON array.
+-------------------------------------------------
+
+METRIC DEFINITIONS
+
+requestCount  
+Total number of requests handled by the endpoint.
+
+p95  
+Latency of the slowest 5% of requests.
+
+latencyTrend  
+How latency changes over time.
+
+errorRate  
+Percentage of failed requests.
+
+statusCodes  
+HTTP response codes returned.
+
+errorCount  
+Number of failed requests.
+
+timeToSlow  
+Estimated requests until performance degradation.
+
+-------------------------------------------------
+
+SEVERITY MEANING
+
+HEALTHY  
+Endpoint operating normally.
+
+LOW  
+Minor performance degradation but still acceptable.
+
+WARNING  
+Performance issue developing.
+
+CRITICAL  
+Endpoint failing or extremely slow.
+
+-------------------------------------------------
+
+TREND MEANING
+
+IMPROVING  
+Latency decreasing.
+
+DEGRADING  
+Latency increasing.
+
+STABLE  
+Latency remaining similar.
+
+-------------------------------------------------
+
+ROOT CAUSE CATEGORIES
+
+SERVER_RESOURCE  
+Server CPU, memory, or worker saturation.
+
+DATABASE  
+Slow database queries.
+
+EXTERNAL_API  
+Upstream or third-party service failure.
+
+HIGH_TRAFFIC  
+Traffic spike.
+
+CLIENT_REQUEST  
+Invalid client requests.
+
+NORMAL_OPERATION  
+Everything functioning normally.
+
+UNKNOWN  
+Not enough information.
+
+Choose the most probable cause.
+
+-------------------------------------------------
+
+PREDICTION RULES
+
+If trend is DEGRADING and timeToSlow is small  
+→ performance may worsen soon.
+
+If trend is IMPROVING  
+→ system likely recovering.
+
+If trend is STABLE  
+→ behaviour likely remain similar.
+
+Avoid unrealistic predictions.
+
+-------------------------------------------------
+
+FOR EACH ENDPOINT RETURN
+
+title  
+Short alert headline.
+
+summary  
+Short explanation of the situation.
+
+trend  
+Use provided value.
+
+rootCause  
+Most likely cause.
+
+reason  
+Detailed explanation of severity and root cause (3–5 sentences).
+
+developerExplanation  
+Explain the issue simply for beginner developers.
+
+action  
+Recommended developer action.
+
+prediction  
+Explain future behaviour.
+
+confidence  
+Number between 0 and 100.
+
+-------------------------------------------------
+
+OUTPUT FORMAT
+
+Return STRICT JSON only.
+
+Return JSON array.
 
 Fields:
 
@@ -99,16 +215,20 @@ title
 summary
 trend
 timeToSlow
-timeToSlowText
 rootCause
 reason
+developerExplanation
 action
+prediction
 confidence
 
-Data:
-${JSON.stringify(contexts)}
-`;
+-------------------------------------------------
 
+INPUT DATA
+
+${JSON.stringify(contexts)}
+
+`;
   const res = await client.chat.completions.create({
     model: "gpt-5-nano",
     messages: [{ role: "user", content: prompt }]
