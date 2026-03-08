@@ -3,17 +3,13 @@ const { getErrorAnalytics } = require("../services/errorAnalytics.service")
 const { attachHealthStatus, calculateHealth } = require("../services/health.service")
 const { getTimeSeries } = require("../services/timeseries.service");
 const { getTimeRange } = require("../utils/timeRange.util");
-// const Agent = require("../models/Agent.model");
-// const agentKey =require("../models/Agent.model")
+
 
 exports.getEndpoints = async (req, res) => {
-  // console.log("REQ.URL:", req.url);
-  // console.log("REQ.QUERY:", req.query);
   try {
     const { agentKey } = req.agent
-    console.log(agentKey)
     const endTime = new Date()
-    const startTime = new Date(Date.now() - 5 * 60 * 1000)
+    const startTime = new Date(Date.now() - 60 * 60 * 1000)
 
     const data = await getEndpointAggregation(
       agentKey,
@@ -51,13 +47,13 @@ exports.getSummary = async (req, res) => {
       endTime
     );
 
-    const status = calculateHealth(summary);
+    const severity = calculateHealth(summary);
 
     return res.json({
       success: true,
       summary: {
         ...summary,
-        status
+        severity
       }
     });
 

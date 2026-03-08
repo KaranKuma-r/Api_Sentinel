@@ -25,7 +25,7 @@ const createAgent = async (req, res) => {
             serviceName,
             agentKey: generatekey()
         })
-        console.log("GET USER:", req.user.id);
+        
         res.status(201).json({ agentKey: agent.agentKey })
     } catch (err) {
         res.status(500).json({ message: err.message })

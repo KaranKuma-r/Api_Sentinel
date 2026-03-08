@@ -8,7 +8,7 @@ const ingestMetrics = async (req, res) => {
         if (!agentKeyFromHeaders) return res.status(400).json({ message: "Missing Authorization header" })
 
         const agentKey = agentKeyFromHeaders.split(" ")[1];
-            console.log(agentKey)
+
         if (!agentKey) {
             return res.status(400).json({
                 message: "Invalid agent key format"
@@ -32,7 +32,7 @@ const ingestMetrics = async (req, res) => {
             responseTimeMs,
             error: isError
         })
-        console.log(endpoint, method, statusCode, responseTimeMs, isError)
+       
         res.status(202).json({ message: "Metric ingested" });
 
     } catch (err) {
