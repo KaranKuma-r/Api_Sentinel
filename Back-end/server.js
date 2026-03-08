@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser")
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require('./Database_Connection/db');  // DATABASE CONNECTION
@@ -13,6 +14,8 @@ app.use(cors({
 
 // Middleware
 app.use(express.json()); 
+app.use(cookieParser())
+
 
 
 // Auth Routes
