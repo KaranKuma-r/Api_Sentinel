@@ -42,7 +42,7 @@ export default function Dashboard() {
     }
 
     const res = await axios.post(
-      "http://localhost:5000/api/agents/create",
+      `${import.meta.env.VITE_API_URL}/api/agents/create`,
       form,
       {
         headers: { Authorization: `Bearer ${token}` }
