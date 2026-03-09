@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/dashboard";
+const BASE_URL = import.meta.env.VITE_DASHBOARD_URL;
 
 export const getSummary = async(agentKey)=>{
      
