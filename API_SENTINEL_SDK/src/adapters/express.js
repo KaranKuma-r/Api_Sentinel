@@ -1,6 +1,6 @@
 const addMetric = require("../core/batcher")
-const shouldIgnore = require("../utlis/Ignore")
-const normalizePath = require("../utlis/normalizePath")
+const shouldIgnore = require("../utils/Ignore")
+const normalizePath = require("../utils/normalizePath")
 
 module.exports = function sentinelMiddleware(config) {
 
