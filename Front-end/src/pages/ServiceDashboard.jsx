@@ -74,6 +74,7 @@ export const ServiceDashboard = () => {
 
         setNextAiTime(new Date(expireTime));
 
+        
         localStorage.setItem(`aiExpire-${agentKey}`, expireTime);
         localStorage.setItem(`aiData-${agentKey}`, JSON.stringify(res));
 
