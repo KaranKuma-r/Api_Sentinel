@@ -8,7 +8,7 @@ dotenv.config();
 const PORT = process.env.PORT;
 const app = express();
 app.use(cors({
-  origin: "https://api-sentinel-karankuma-rs-projects.vercel.app", 
+  origin: "https://api-sentinel-gamma.vercel.app",
   credentials: true
 }));
 
