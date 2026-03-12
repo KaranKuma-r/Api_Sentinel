@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         require:true,
     },
+    lastAIUsage: {
+        type: Date,
+        default: null
+    }
     
 
 },{timestamps:true} 
