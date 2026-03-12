@@ -15,7 +15,7 @@ export default function Dashboard() {
 
   const fetchServices = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/agents/serviceName",
+      `${import.meta.env.VITE_API_URL}/api/agents/serviceName`,
       {
         headers: { Authorization: `Bearer ${token}` }
       }
