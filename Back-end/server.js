@@ -8,7 +8,7 @@ dotenv.config();
 const PORT = process.env.PORT;
 const app = express();
 app.use(cors({
-  origin: "http://localhost:5173",   // frontend URL
+  origin: "https://api-sentinel-karankuma-rs-projects.vercel.app", 
   credentials: true
 }));
 
