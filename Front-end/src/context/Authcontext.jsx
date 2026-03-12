@@ -16,6 +16,8 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("aiExpire");
+    localStorage.removeItem("aiData");
     setToken(null);
     setIsAuthenticated(false);
   };
