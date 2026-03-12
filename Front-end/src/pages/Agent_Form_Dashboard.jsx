@@ -69,6 +69,13 @@ export default function Dashboard() {
   };
 
   const isFirstTimeUser = services.length === 0;
+  if (loading) {
+  return (
+    <div className="flex justify-center items-center h-screen text-gray-400">
+      Loading services...
+    </div>
+  );
+}
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0B0F19] text-white font-[Inter]">
@@ -80,6 +87,7 @@ export default function Dashboard() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
 
       <Navbar />
+      
 
       <div className="relative z-10 pt-28 px-4 flex justify-center">
 
@@ -89,11 +97,7 @@ export default function Dashboard() {
             <h1 className="text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
               Services
             </h1>
-            {loading && (
-              <div className="flex justify-center items-center h-[300px] text-gray-400">
-                Loading services...
-              </div>
-            )}
+            
             {!loading && isFirstTimeUser && (
               <button
                 onClick={() => {
