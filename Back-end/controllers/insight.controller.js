@@ -34,7 +34,6 @@ exports.getInsights = async (req, res) => {
       endTime,
     )
     const insights = await buildInsights(aggData, tsData, errorStatusData.endpointStatusCodes);
-    console.log("📊 INSIGHT API HIT");
 
     await User.findByIdAndUpdate(
       req.agent.userId,
