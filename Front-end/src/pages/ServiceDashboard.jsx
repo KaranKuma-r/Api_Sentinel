@@ -74,13 +74,13 @@ export const ServiceDashboard = () => {
 
         setNextAiTime(new Date(expireTime));
 
-        localStorage.setItem("aiExpire", expireTime);
-        localStorage.setItem("aiData", JSON.stringify(res));
+        localStorage.setItem(`aiExpire-${agentKey}`, expireTime);
+        localStorage.setItem(`aiData-${agentKey}`, JSON.stringify(res));
 
       } else {
 
-        localStorage.setItem("aiMessage", res.message);
-        localStorage.setItem("aiExpire", expireTime);
+        localStorage.setItem(`aiMessage-${agentKey}`, res.message);
+        localStorage.setItem(`aiExpire-${agentKey}`, expireTime);
 
         setData(prev => ({
           ...prev,
@@ -105,9 +105,9 @@ export const ServiceDashboard = () => {
 
   useEffect(() => {
 
-    const message = localStorage.getItem("aiMessage");
-    const expire = localStorage.getItem("aiExpire");
-    const aiData = localStorage.getItem("aiData");
+    const message = localStorage.getItem(`aiMessage-${agentKey}`);
+    const expire = localStorage.getItem(`aiExpire-${agentKey}`);
+    const aiData = localStorage.getItem(`aiData-${agentKey}`);
 
     if (!expire) return;
 
@@ -115,12 +115,12 @@ export const ServiceDashboard = () => {
 
       if (aiData) {
 
-      setData(prev => ({
-        ...prev,
-        ai: JSON.parse(aiData)
-      }));
+        setData(prev => ({
+          ...prev,
+          ai: JSON.parse(aiData)
+        }));
 
-    }
+      }
       if (message) {
 
         setData(prev => ({
@@ -134,9 +134,9 @@ export const ServiceDashboard = () => {
 
     } else {
 
-      localStorage.removeItem("aiMessage");
-      localStorage.removeItem("aiExpire");
-      localStorage.removeItem("aiData");
+      localStorage.removeItem(`aiMessage-${agentKey}`);
+      localStorage.removeItem(`aiExpire-${agentKey}`);
+      localStorage.removeItem(`aiData-${agentKey}`);
 
     }
 
@@ -196,14 +196,14 @@ export const ServiceDashboard = () => {
                 <div className="flex flex-col items-end text-xs">
 
                   {aiTime && (
-                    <span className="text-slate-400">
-                      Generated: {aiTime.toLocaleTimeString()}
+                    <span style={{ color: "oklch(67.3% 0.182 276.935)" }}>
+                      Generated:<span className="text-slate-400">{aiTime.toLocaleString()}</span>
                     </span>
                   )}
 
                   {nextAiTime && (
                     <span style={{ color: "oklch(67.3% 0.182 276.935)" }}>
-                     Next Reload AI: <span className="text-slate-400">{nextAiTime.toLocaleString()}</span> 
+                      Next Reload AI: <span className="text-slate-400">{nextAiTime.toLocaleString()}</span>
                     </span>
                   )}
 
@@ -220,7 +220,7 @@ export const ServiceDashboard = () => {
                 )}
 
               </div>
-              
+
               {/* CONTENT */}
 
               <div className="flex-1 overflow-y-auto pr-1">
