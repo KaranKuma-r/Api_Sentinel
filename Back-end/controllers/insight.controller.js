@@ -1,6 +1,6 @@
 const { buildInsights } = require("../services/insight/insight.service");
 const { getTimeRange } = require("../utils/timeRange.util");
-
+const User = require("../models/User")
 const { getEndpointAggregation } = require("../services/aggregation.service");
 
 const { getTimeSeries } = require("../services/timeseries.service");
@@ -33,8 +33,13 @@ exports.getInsights = async (req, res) => {
       startTime,
       endTime,
     )
-    const insights = await buildInsights(aggData, tsData,errorStatusData.endpointStatusCodes);
+    const insights = await buildInsights(aggData, tsData, errorStatusData.endpointStatusCodes);
     console.log("📊 INSIGHT API HIT");
+
+    await User.findByIdAndUpdate(
+      req.agent.userId,
+      { lastAIUsage: new Date() }
+    );
 
 
     res.json({
