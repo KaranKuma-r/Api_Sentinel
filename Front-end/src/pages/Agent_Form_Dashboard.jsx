@@ -9,18 +9,28 @@ export default function Dashboard() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ serviceName: "" });
   const [createdService, setCreatedService] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate()
 
   const token = localStorage.getItem("token");
 
   const fetchServices = async () => {
-    const res = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/agents/serviceName`,
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      }
-    );
-    setServices(res.data);
+    try {
+      setLoading(true);
+
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/agents/serviceName`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      setServices(res.data);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -79,8 +89,12 @@ export default function Dashboard() {
             <h1 className="text-3xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
               Services
             </h1>
-
-            {!isFirstTimeUser && (
+            {loading && (
+              <div className="flex justify-center items-center h-[300px] text-gray-400">
+                Loading services...
+              </div>
+            )}
+            {!loading && isFirstTimeUser && (
               <button
                 onClick={() => {
                   setShowForm(true);
@@ -112,7 +126,7 @@ export default function Dashboard() {
           )}
 
           {/* SERVICE LIST */}
-          {services.length > 0 && (
+          {!loading && services.length > 0 && (
             <div className="h-[480px] overflow-y-auto pr-2">
               <div className="space-y-6">
 
@@ -124,7 +138,7 @@ export default function Dashboard() {
                       bg-white/[0.03] border border-white/10
                       hover:bg-white/[0.06] hover:scale-[1.01]
                       hover:border-indigo-500/30 transition"
-                    >
+                  >
 
                     <div className="flex gap-4">
 
