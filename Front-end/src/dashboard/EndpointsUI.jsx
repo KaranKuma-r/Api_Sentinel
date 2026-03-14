@@ -1,4 +1,6 @@
-export const Endpoints = ({ data = [] }) => {
+import React from "react";
+
+ const Endpoints = ({ data = [] }) => {
 
 const getStatusStyle = (status) => {
     switch (status) {
@@ -84,3 +86,4 @@ const getStatusStyle = (status) => {
     </div>
   );
 };
+export default React.memo(Endpoints);

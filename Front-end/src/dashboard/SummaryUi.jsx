@@ -1,4 +1,6 @@
-export default function SummaryUI({ data }) {
+import React from "react";
+
+ function SummaryUI({ data }) {
 
   const severityColor =
     data.severity === "HEALTHY"
@@ -8,7 +10,7 @@ export default function SummaryUI({ data }) {
       : data.severity === "WARNING"
       ? "text-amber-400"
       : "text-rose-400";
-
+console.log("SummaryUI Rendered");
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
@@ -44,3 +46,4 @@ export default function SummaryUI({ data }) {
     </div>
   );
 }
+export default React.memo(SummaryUI);

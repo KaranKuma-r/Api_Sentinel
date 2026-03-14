@@ -1,3 +1,4 @@
+import React from "react";
 import {
   LineChart,
   Line,
@@ -9,7 +10,7 @@ import {
   Legend
 } from "recharts";
 
-export const TimeSeries = ({ data = [] }) => {
+ const TimeSeries = ({ data = [] }) => {
 
   const formattedData = data.map(item => ({
     ...item,
@@ -121,3 +122,5 @@ export const TimeSeries = ({ data = [] }) => {
     </div>
   );
 };
+
+export default React.memo(TimeSeries);

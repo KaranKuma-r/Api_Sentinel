@@ -1,4 +1,6 @@
-export const SlowEndpoints = ({ data = [] }) => {
+import React from "react";
+
+ const SlowEndpoints = ({ data = [] }) => {
 
   return (
     <div className="bg-[#12172A] border border-[#1F2937] rounded-xl p-6">
@@ -64,3 +66,5 @@ export const SlowEndpoints = ({ data = [] }) => {
     </div>
   );
 };
+
+export default React.memo(SlowEndpoints);

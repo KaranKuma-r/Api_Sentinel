@@ -1,3 +1,4 @@
+import React from "react";
 import {
   BarChart,
   Bar,
@@ -7,8 +8,8 @@ import {
   ResponsiveContainer
 } from "recharts";
 
-export const ErrorAnalytics = ({ data }) => {
-
+ const ErrorAnalytics = ({ data }) => {
+console.log("Error")
   if (!data) return null;
 
   const { statusCodes = [], endpoints = [] } = data;
@@ -99,3 +100,5 @@ export const ErrorAnalytics = ({ data }) => {
     </div>
   );
 };
+
+export default React.memo(ErrorAnalytics);
