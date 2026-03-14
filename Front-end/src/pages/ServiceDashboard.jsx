@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import SummaryUI from "../dashboard/SummaryUi";
 import { useParams } from "react-router-dom";
 import { getSlowEndpoints, getSummary, getTimeSeriesData, getErrors, getEndpoints, getInsightsAI } from "../api/dasboardApi";
-import { TimeSeries } from "../dashboard/TimeSeriesUi";
-import { SlowEndpoints } from "../dashboard/SlowUi";
-import { ErrorAnalytics } from "../dashboard/ErrorAnylatics";
-import { Endpoints } from "../dashboard/EndpointsUI";
+import  TimeSeries  from "../dashboard/TimeSeriesUi";
+import  SlowEndpoints  from "../dashboard/SlowUi";
+import  ErrorAnalytics  from "../dashboard/ErrorAnylatics";
+import  Endpoints  from "../dashboard/EndpointsUI";
 import { AI_Panel } from "../dashboard/AI_Panel";
 
 
