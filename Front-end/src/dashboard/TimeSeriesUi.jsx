@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -12,13 +12,15 @@ import {
 
  const TimeSeries = ({ data = [] }) => {
 
-  const formattedData = data.map(item => ({
-    ...item,
-    time: new Date(item.time).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit"
-    })
-  }));
+   const formattedData = useMemo(() => {
+    return data.map(item => ({
+      ...item,
+      time: new Date(item.time).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    }));
+  }, [data]);
 
   return (
     <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 backdrop-blur-xl">
