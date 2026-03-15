@@ -98,7 +98,7 @@ export default function Dashboard() {
               Services
             </h1>
             
-            {!loading && isFirstTimeUser && (
+            {!loading && (
               <button
                 onClick={() => {
                   setShowForm(true);
