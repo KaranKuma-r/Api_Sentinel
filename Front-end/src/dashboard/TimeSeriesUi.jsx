@@ -10,16 +10,41 @@ import {
   Legend
 } from "recharts";
 
- const TimeSeries = ({ data = [] }) => {
+const TimeSeries = ({ data = [] }) => {
 
-   const formattedData = useMemo(() => {
-    return data.map(item => ({
-      ...item,
-      time: new Date(item.time).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      })
-    }));
+  const formattedData = useMemo(() => {
+
+    const grouped = {};
+
+    data.forEach(item => {
+
+      const key = item.time;
+
+      if (!grouped[key]) {
+        grouped[key] = {
+          time: key,
+          requestCount: 0,
+          errorCount: 0,
+          totalLatency: 0
+        };
+      }
+
+      grouped[key].requestCount += item.requestCount;
+      grouped[key].errorCount += item.errorCount;
+
+      grouped[key].totalLatency += item.avgLatency * item.requestCount;
+
+    });
+
+    return Object.values(grouped)
+      .sort((a, b) => new Date(a.time) - new Date(b.time))
+      .map(d => ({
+        time: d.time,
+        requestCount: d.requestCount,
+        errorCount: d.errorCount,
+        avgLatency: Math.round(d.totalLatency / d.requestCount)
+      }));
+
   }, [data]);
 
   return (
@@ -41,6 +66,12 @@ import {
 
             <XAxis
               dataKey="time"
+              tickFormatter={(t) =>
+                new Date(t).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit"
+                })
+              }
               stroke="#475569"
               tick={{ fill: "#94a3b8", fontSize: 12 }}
               tickMargin={12}
@@ -51,6 +82,7 @@ import {
                 fill: "#38bdf8"
               }}
             />
+
             <YAxis
               yAxisId="left"
               stroke="#22C55E"
@@ -83,37 +115,47 @@ import {
                 backgroundColor: "#020617",
                 border: "1px solid #ffffff10"
               }}
+              labelFormatter={(t) =>
+                new Date(t).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit"
+                })
+              }
             />
 
             <Legend verticalAlign="top" height={36} />
 
             <Line
               yAxisId="right"
-              type="monotone"
+              type="linear"
               dataKey="requestCount"
               stroke="#6366F1"
               strokeWidth={2}
-              dot={false}
+              dot={{ r: 3 }}
+              activeDot={{ r: 6 }}
               name="Requests"
             />
 
             <Line
               yAxisId="right"
-              type="monotone"
+              type="linear"
               dataKey="errorCount"
               stroke="#EF4444"
               strokeWidth={2}
-              dot={false}
+              dot={{ r: 3 }}
+              activeDot={{ r: 6 }}
               name="Errors"
             />
 
             <Line
               yAxisId="left"
-              type="monotone"
+              type="linear"
               dataKey="avgLatency"
               stroke="#22C55E"
               strokeWidth={2}
-              dot={false}
+              dot={{ r: 3 }}
+              activeDot={{ r: 6 }}
               name="Latency (ms)"
             />
 
