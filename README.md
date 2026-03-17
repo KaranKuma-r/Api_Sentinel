@@ -11,6 +11,12 @@
 
 ---
 
+## 🔗 Repository
+
+👉 https://github.com/KaranKuma-r/Api_Sentinel.git
+
+---
+
 ## 🚀 Overview
 
 API Sentinel is a **full-stack API monitoring and observability platform** that helps developers track API performance, detect failures, and analyze root causes using **AI-powered insights**.
