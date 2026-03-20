@@ -43,7 +43,7 @@ It consists of:
 | Layer | Description | Tech Stack |
 |------|------------|-----------|
 | 🧰 SDK | Captures API metrics and sends telemetry | Node.js, Axios |
-| ⚙️ Backend | Handles ingestion, storage, and AI analysis | Express.js, MongoDB, Mongoose, OpenAI, Gemini |
+| ⚙️ Backend | Handles ingestion, storage, and AI analysis | Express.js, MongoDB, Mongoose, OpenAI, |
 | 🖥️ Frontend | Visual dashboard for monitoring | React, Vite, Tailwind, Recharts, Three.js |
 
 ---
