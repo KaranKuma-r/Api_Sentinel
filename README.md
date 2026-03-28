@@ -30,11 +30,11 @@ It consists of:
 
 ## ✨ Key Features
 
-- ⚡ Real-time monitoring of API latency, request count, and error rates  
-- 🤖 AI-based root cause analysis using OpenAI & Gemini  
-- 🧰 Lightweight SDK for Express.js integration  
-- 📊 Interactive dashboard with charts and real-time metrics  
-- 🔐 Secure authentication using JWT  
+- ⚡ Real-time monitoring of API latency, request count, and error rates.
+- 🤖 AI-based root cause analysis using OpenAI & Gemini.  
+- 🧰 Lightweight SDK for Express.js integration.
+- 📊 Interactive dashboard with charts and real-time metrics.  
+- 🔐 Secure authentication using JWT.  
 
 ---
 
