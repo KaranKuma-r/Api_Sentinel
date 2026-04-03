@@ -11,9 +11,9 @@
 
 ---
 
-## 🔗 Repository
+## 🔗 Live
 
-👉 https://github.com/KaranKuma-r/Api_Sentinel.git
+👉 https://api-sentinel-gamma.vercel.app/
 
 ---
 
